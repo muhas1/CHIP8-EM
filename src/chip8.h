@@ -22,3 +22,13 @@ const unsigned int STACK_VALUE = 16;
 // CHIP8 has a graphics dimension of 2048 pixels [64 x 32]
 const unsigned int CHIP8_HEIGHT = 64;
 const unsigned int CHIP8_WIDTH = 32;
+
+class chip8 {
+public:
+  chip8();
+  void loadRom(char const *filename);
+  void emulationCycle();
+  ~chip8();
+
+private:
+};
