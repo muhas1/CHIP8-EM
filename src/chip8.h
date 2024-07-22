@@ -30,6 +30,9 @@ public:
   void emulationCycle();
   ~chip8();
 
+  uint8_t keypad[KEY_COUNT]{};
+  uint32_t window[CHIP8_WIDTH * CHIP8_HEIGHT]{};
+
 private:
   /*
    * When we use {} it will initialize an array to contain all zeroes
