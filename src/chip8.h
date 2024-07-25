@@ -66,4 +66,13 @@ private:
    * we can use a uint16_t to represent this and store our values
    */
   uint16_t opcodes{};
+
+  /*
+   * There is an instruction which places a random number in a register.
+   * If we were using physical hardware this could be achieved by,
+   * reading the value from a noisy disconnected pin or using a dedicated RNG
+   * Chip For our case we can use C++ built in random facilities
+   */
+  std::default_random_engine randGen;
+  std::uniform_int_distribution<uint8_t> randByte;
 };

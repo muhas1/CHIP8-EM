@@ -1,7 +1,10 @@
 #include "chip8.h"
+#include <chrono>
+#include <cstdint>
 #include <cstring>
 #include <fstream>
 #include <iosfwd>
+#include <random>
 
 const unsigned int START_ADDRESS = 0x200;
 // The set is 80 as we have 16 characters each being 5 bytes
@@ -28,7 +31,8 @@ uint8_t fontset[FONTSET_SIZE] = {
 // Starting address for putting the font into memory
 const unsigned FONT_START_ADDRESS = 0x50;
 
-chip8::chip8() {
+chip8::chip8()
+    : randGen(std::chrono::system_clock::now().time_since_epoch().count()) {
   // Initialize the program counter
   // CHIP8 memory from 0x000 to 0x1FF is reserved
   // so the ROM instructions must start from 0x200
@@ -39,6 +43,8 @@ chip8::chip8() {
     // each time
     memory[FONT_START_ADDRESS + i] = fontset[i];
   }
+  // Get a random number between 0 and 255
+  randByte = std::uniform_int_distribution<uint8_t>(0, 255U);
 }
 
 void chip8::loadRom(char const *filename) {
