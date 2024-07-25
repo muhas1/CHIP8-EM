@@ -75,4 +75,7 @@ private:
    */
   std::default_random_engine randGen;
   std::uniform_int_distribution<uint8_t> randByte;
+
+  // Clear display instruction 00E0 CLS
+  void op_00E0();
 };
