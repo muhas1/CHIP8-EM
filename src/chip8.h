@@ -6,7 +6,9 @@
 
 /*
  * The Following are CHIP8 values that we can declare as global and use
- * later on in the code, the functionality of each global var is described above
+ *
+ * later on in the code, the functionality of each global var is described
+ * above
  * it
  * */
 
@@ -36,8 +38,11 @@ public:
 private:
   /*
    * When we use {} it will initialize an array to contain all zeroes
+   *
    * if we don't use {}, and leave it as something like uint8_t
-   * memory[MEMORY_SIZE]; then the values in the array are uninitialized and can
+   *
+   * memory[MEMORY_SIZE]; then the values in the array are uninitialized and
+   * can
    * be random
    */
 
@@ -48,7 +53,8 @@ private:
   uint8_t sp;                   // our stack pointer
 
   /*
-   * There is an index register and a program counter that can store values
+   * There is an index register and a program counter that can store
+   * values
    * between 0x000 to 0xFFF
    */
   uint16_t index{};
@@ -56,26 +62,130 @@ private:
 
   /*
    * The CHIP8 contains 2 timer registers that count at 60Hz.
-   * When set above 0, they'll count down to 0 (zero)
+   * When set
+   * above 0, they'll count down to 0 (zero)
    */
   uint8_t delay_timer;
   uint8_t sound_timer;
 
   /*
    * The Chip8 has 35 opcodes that are all two bytes long,
-   * we can use a uint16_t to represent this and store our values
+   * we can use
+   * a uint16_t to represent this and store our values
    */
   uint16_t opcodes{};
 
   /*
    * There is an instruction which places a random number in a register.
-   * If we were using physical hardware this could be achieved by,
+
+   * * If we were using physical hardware this could be achieved by,
+   *
    * reading the value from a noisy disconnected pin or using a dedicated RNG
-   * Chip For our case we can use C++ built in random facilities
+
+   * * Chip For our case we can use C++ built in random facilities
    */
   std::default_random_engine randGen;
   std::uniform_int_distribution<uint8_t> randByte;
 
   // Clear display instruction 00E0 CLS
   void op_00E0();
+
+  // RET
+  void OP_00EE();
+
+  // JP address
+  void OP_1nnn();
+
+  // CALL address
+  void OP_2nnn();
+
+  // SE Vx, byte
+  void OP_3xkk();
+
+  // SNE Vx, byte
+  void OP_4xkk();
+
+  // SE Vx, Vy
+  void OP_5xy0();
+
+  // LD Vx, byte
+  void OP_6xkk();
+
+  // ADD Vx, byte
+  void OP_7xkk();
+
+  // LD Vx, Vy
+  void OP_8xy0();
+
+  // OR Vx, Vy
+  void OP_8xy1();
+
+  // AND Vx, Vy
+  void OP_8xy2();
+
+  // XOR Vx, Vy
+  void OP_8xy3();
+
+  // ADD Vx, Vy
+  void OP_8xy4();
+
+  // SUB Vx, Vy
+  void OP_8xy5();
+
+  // SHR Vx
+  void OP_8xy6();
+
+  // SUBN Vx, Vy
+  void OP_8xy7();
+
+  // SHL Vx
+  void OP_8xyE();
+
+  // SNE Vx, Vy
+  void OP_9xy0();
+
+  // LD I, address
+  void OP_Annn();
+
+  // JP V0, address
+  void OP_Bnnn();
+
+  // RND Vx, byte
+  void OP_Cxkk();
+
+  // DRW Vx, Vy, height
+  void OP_Dxyn();
+
+  // SKP Vx
+  void OP_Ex9E();
+
+  // SKNP Vx
+  void OP_ExA1();
+
+  // LD Vx, DT
+  void OP_Fx07();
+
+  // LD Vx, K
+  void OP_Fx0A();
+
+  // LD DT, Vx
+  void OP_Fx15();
+
+  // LD ST, Vx
+  void OP_Fx18();
+
+  // ADD I, Vx
+  void OP_Fx1E();
+
+  // LD F, Vx
+  void OP_Fx29();
+
+  // LD B, Vx
+  void OP_Fx33();
+
+  // LD [I], Vx
+  void OP_Fx55();
+
+  // LD Vx, [I]
+  void OP_Fx65();
 };
