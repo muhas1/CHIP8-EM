@@ -105,10 +105,28 @@ void chip8::OP_2nnn() {
   pc = address;
 }
 
+/*
+ * Skip next instruction if Vx = kk.
+ * Since our PC has already been incremented by 2 in Cycle(), we can just
+ * increment by 2 again to skip the next instruction.
+ */
 void chip8::OP_3xkk() {
   uint8_t vx = (opcodes & 0x0F00u) >> 8u;
   uint8_t byte = (opcodes & 0x00FFu);
   if (registers[vx] == byte) {
+    pc += 2;
+  }
+}
+
+/*
+ * Skip next instruction if Vx != kk.
+ * Since our PC has already been incremented by 2 in Cycle(), we can just
+ * increment by 2 again to skip the next instruction.
+ */
+void chip8::OP_4xkk() {
+  uint8_t vx = (opcodes & 0x0F00u) >> 8u;
+  uint8_t byte = (opcodes & 0x00FFu);
+  if (registers[vx] != byte) {
     pc += 2;
   }
 }
