@@ -70,3 +70,45 @@ void chip8::loadRom(char const *filename) {
     delete[] buffer;
   }
 }
+
+void chip8::op_00E0() { memset(window, 0, sizeof(window)); }
+
+// The top of the stack will have the address of one instruction PAST the one
+// that called the subroutine so we can put that back in the program counter,
+// this overwrites our preemptive pc += 2;
+void chip8::OP_00EE() {
+  --sp;
+  pc = stack[sp];
+}
+
+// Jump to location nnn
+// This instruction sets the program counter to nnn
+// A jump doesn't need to remember its origin so we can ignore having to use sp
+void chip8::OP_1nnn() {
+  // Perform a bitwise AND operation, this extracts the lower 12 bits and and
+  // discards the upper 4
+  uint16_t address = opcodes & 0x0FFFu;
+  pc = address;
+}
+
+// Call subroutine at nnn
+// When we call a subroutine we want to return to it eventually,
+// we put the current PC into the top of the stack, Remember we did
+// PC += 2 in Cycle() so the current PC holds the next instruction after this
+// CALL We dont want to return to the call instruction because it would cause an
+// infinite loop
+void chip8::OP_2nnn() {
+  uint16_t address = opcodes & 0x0FFFu;
+
+  stack[sp] = pc;
+  ++sp;
+  pc = address;
+}
+
+void chip8::OP_3xkk() {
+  uint8_t vx = (opcodes & 0x0F00u) >> 8u;
+  uint8_t byte = (opcodes & 0x00FFu);
+  if (registers[vx] == byte) {
+    pc += 2;
+  }
+}
