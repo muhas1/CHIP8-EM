@@ -5,6 +5,7 @@
 #include <fstream>
 #include <iosfwd>
 #include <random>
+#include <sys/types.h>
 
 const unsigned int START_ADDRESS = 0x200;
 // The set is 80 as we have 16 characters each being 5 bytes
@@ -129,4 +130,21 @@ void chip8::OP_4xkk() {
   if (registers[vx] != byte) {
     pc += 2;
   }
+}
+
+// Skip the instruction if vx == vy
+void chip8::OP_5xy0() {
+  uint8_t vx = (opcodes & 0x0F00u) >> 8u;
+  uint8_t vy = (opcodes & 0x00F0u) >> 4u;
+  if (registers[vx] == registers[vy]) {
+    pc += 2;
+  }
+}
+
+// Set Vx = kk
+void chip8::OP_6xkk() {
+  uint8_t vx = (opcodes & 0x0F00u) >> 8u;
+  uint8_t byte = opcodes & 0x00FFu;
+
+  registers[vx] = byte;
 }
