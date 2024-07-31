@@ -184,3 +184,18 @@ void chip8::OP_8xy3() {
   uint8_t vy = (opcodes & 0x00F0u) >> 4u;
   registers[vx] ^= registers[vy];
 }
+
+// Set Vx = Vx XOR Vy.
+void chip8::OP_8xy4() {
+  uint8_t vx = (opcodes & 0x0F00u) >> 8u;
+  uint8_t vy = (opcodes & 0x00F0u) >> 4u;
+
+  uint16_t sum = registers[vx] + registers[vy];
+  if (sum > 255U) {
+    registers[0xF] = 1;
+  } else {
+    registers[0xF] = 0;
+  }
+
+  registers[vx] = sum & 0xFFu;
+}
