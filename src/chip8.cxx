@@ -148,3 +148,39 @@ void chip8::OP_6xkk() {
 
   registers[vx] = byte;
 }
+
+// Set vx = Vx + kk
+void chip8::OP_7xkk() {
+  uint8_t vx = (opcodes & 0x0F00u) >> 8u;
+  uint8_t byte = (opcodes & 0x00FFu);
+  registers[vx] += byte;
+}
+
+// Set vx = vy
+void chip8::OP_8xy0() {
+  uint8_t vx = (opcodes & 0x0F00u) >> 8u;
+  uint8_t vy = (opcodes & 0x00F0u) >> 4u;
+  registers[vx] = registers[vy];
+}
+
+// Set vx = vx OR vy
+void chip8::OP_8xy1() {
+  uint8_t vx = (opcodes & 0x0F00u) >> 8u;
+  uint8_t vy = (opcodes & 0x00F0u) >> 4u;
+
+  registers[vx] |= registers[vy];
+}
+
+// Set Vx = Vx AND Vy.
+void chip8::OP_8xy2() {
+  uint8_t vx = (opcodes & 0x0F00u) >> 8u;
+  uint8_t vy = (opcodes & 0x00F0u) >> 4u;
+  registers[vx] &= registers[vy];
+}
+
+// Set Vx = Vx XOR Vy.
+void chip8::OP_8xy3() {
+  uint8_t vx = (opcodes & 0x0F00u) >> 8u;
+  uint8_t vy = (opcodes & 0x00F0u) >> 4u;
+  registers[vx] ^= registers[vy];
+}
