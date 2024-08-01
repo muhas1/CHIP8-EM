@@ -4,6 +4,7 @@
 #include <cstring>
 #include <fstream>
 #include <iosfwd>
+#include <iostream>
 #include <random>
 #include <sys/types.h>
 
@@ -184,8 +185,14 @@ void chip8::OP_8xy3() {
   uint8_t vy = (opcodes & 0x00F0u) >> 4u;
   registers[vx] ^= registers[vy];
 }
+// Set Vx = Vx + Vy, set VF = carry.
 
-// Set Vx = Vx XOR Vy.
+// The values of Vx and Vy are added together. If the result is greater than 8
+// bits (i.e., > 255,) VF is set to 1, otherwise 0. Only the lowest 8 bits of
+// the result are kept, and stored in Vx.
+
+// This is an ADD with an overflow flag. If the sum is greater than what can fit
+// into a byte (255), register VF will be set to 1 as a flag.
 void chip8::OP_8xy4() {
   uint8_t vx = (opcodes & 0x0F00u) >> 8u;
   uint8_t vy = (opcodes & 0x00F0u) >> 4u;
@@ -198,4 +205,21 @@ void chip8::OP_8xy4() {
   }
 
   registers[vx] = sum & 0xFFu;
+}
+
+// Set Vx = Vx - Vy, set VF = NOT borrow.
+// If Vx > Vy, then VF is set to 1, otherwise 0. Then Vy is subtracted from Vx,
+// and the results stored in Vx.
+void chip8::OP_8xy5() {
+  std::cout << "temp" << std::endl;
+  uint8_t vx = (opcodes & 0x0F00u) >> 8u;
+  uint8_t vy = (opcodes & 0x00F0u) >> 4u;
+
+  if (registers[vx] > registers[vy]) {
+    registers[0xF] = 1;
+  } else {
+    registers[0xF] = 0;
+  }
+
+  registers[vx] -= registers[vy];
 }
