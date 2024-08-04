@@ -262,3 +262,15 @@ void chip8::OP_8xyE() {
   registers[vx] <<= 1;
 }
 
+// Extract both the x and y register values and store them
+// compares the values in vx and vy registers
+// if the values are not equal increment the pc counter and skip this
+// instruction
+void chip8::OP_9xy0() {
+  uint8_t vx = (opcodes & 0x0F00u) >> 8u;
+  uint8_t vy = (opcodes & 0x00F0u) >> 4u;
+  if (registers[vx] != registers[vy]) {
+    pc += 2;
+  }
+}
+
