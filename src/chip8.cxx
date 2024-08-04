@@ -252,3 +252,13 @@ void chip8::OP_8xy7() {
   registers[vx] = registers[vy] - registers[vx];
 }
 
+// Extracts the x registers value from the opcodes
+// Saves the MSB into the carry flag register VF
+// Shifts the value in vx one bit to the left
+void chip8::OP_8xyE() {
+  uint8_t vx = (opcodes & 0x0F00u) >> 8u;
+  // Save MSB into VF
+  registers[0xF] = (registers[vx] & 0x80u) >> 7u;
+  registers[vx] <<= 1;
+}
+
