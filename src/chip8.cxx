@@ -223,3 +223,15 @@ void chip8::OP_8xy5() {
 
   registers[vx] -= registers[vy];
 }
+
+// Set Vx = Vx SHR 1.
+// If the least-significant bit of Vx is 1, then VF is set to 1, otherwise 0.
+// Then Vx is divided by 2.
+// A right shift is performed (division by 2), and the least significant bit is
+// saved in Register VF.
+void chip8::OP_8xy6() {
+  uint8_t vx = (opcodes & 0x0F00u) >> 8u;
+  // Save LSB in vf
+  registers[0xF] = (registers[vx] & 0x1u);
+  registers[vx] >>= 1;
+}
