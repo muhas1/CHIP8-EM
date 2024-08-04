@@ -2,7 +2,6 @@
 #include <chrono>
 #include <cstdint>
 #include <cstring>
-#include <filesystem>
 #include <fstream>
 #include <iosfwd>
 #include <iostream>
@@ -295,4 +294,119 @@ void chip8::OP_Cxkk() {
   uint8_t byte = opcodes & 0x00FFu;
 
   registers[Vx] = randByte(randGen) & byte;
+}
+
+void chip8::OP_Dxyn() {
+  uint8_t vx = (opcodes & 0x0F00u) >> 8u;
+  uint8_t vy = (opcodes & 0x00F0u) >> 4u;
+  uint8_t height = (opcodes & 0x000Fu);
+
+  // Wrap if going beyond screen boundaries
+  uint8_t xPos = registers[vx] % CHIP8_WIDTH;
+  uint8_t yPos = registers[vy] % CHIP8_HEIGHT;
+
+  registers[0xF] = 0;
+
+  for (unsigned int row = 0; row < height; ++row) {
+    uint8_t spiriteByte = memory[index + row];
+
+    for (unsigned int col = 0; col < 8; ++col) {
+      uint8_t spritePixel = spiriteByte & (0x80u >> col);
+
+      uint32_t *screenPixel =
+          &window[(yPos + row) * CHIP8_WIDTH + (xPos + col)];
+
+      if (spritePixel) {
+
+        if (*screenPixel == 0xFFFFFFFF) {
+          registers[0xF] = 1;
+        }
+
+        // XOR with sprite pixel
+        *screenPixel ^= 0xFFFFFFFFF;
+      }
+    }
+  }
+}
+
+// Skip the next if key with the value of vx is pressed
+void chip8::OP_Ex9E() {
+  uint8_t vx = (opcodes & 0x0F00u) >> 8u;
+
+  uint8_t key = registers[vx];
+
+  if (keypad[key]) {
+    pc += 2;
+  }
+}
+
+// Skip the next instruction if key with value of vx is NOT pressed
+void chip8::OP_ExA1() {
+  uint8_t vx = (opcodes & 0x0F00u) >> 8u;
+
+  uint8_t key = registers[vx];
+
+  if (!keypad[key]) {
+    pc += 2;
+  }
+}
+
+//
+void chip8::OP_Fx0A() {
+  uint8_t Vx = (opcodes & 0x0F00u) >> 8u;
+
+  if (keypad[0]) {
+    registers[Vx] = 0;
+  } else if (keypad[1]) {
+    registers[Vx] = 1;
+  } else if (keypad[2]) {
+    registers[Vx] = 2;
+  } else if (keypad[3]) {
+    registers[Vx] = 3;
+  } else if (keypad[4]) {
+    registers[Vx] = 4;
+  } else if (keypad[5]) {
+    registers[Vx] = 5;
+  } else if (keypad[6]) {
+    registers[Vx] = 6;
+  } else if (keypad[7]) {
+    registers[Vx] = 7;
+  } else if (keypad[8]) {
+    registers[Vx] = 8;
+  } else if (keypad[9]) {
+    registers[Vx] = 9;
+  } else if (keypad[10]) {
+    registers[Vx] = 10;
+  } else if (keypad[11]) {
+    registers[Vx] = 11;
+  } else if (keypad[12]) {
+    registers[Vx] = 12;
+  } else if (keypad[13]) {
+    registers[Vx] = 13;
+  } else if (keypad[14]) {
+    registers[Vx] = 14;
+  } else if (keypad[15]) {
+    registers[Vx] = 15;
+  } else {
+    pc -= 2;
+  }
+}
+
+// Set sound_timer to vx
+void chip8::OP_Fx18() {
+  uint8_t vx = (opcodes & 0x0F00u) >> 8u;
+
+  sound_timer = registers[vx];
+}
+
+void chip8::OP_Fx33() {
+  uint8_t vx = (opcodes & 0x0F00u);
+  uint8_t value = registers[vx];
+
+  // Ones-place
+  memory[index + 2] = value % 10;
+  value /= 10;
+
+  // Hundreds Place
+  memory[index] = value % 10;
 }
