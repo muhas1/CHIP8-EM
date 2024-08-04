@@ -235,3 +235,20 @@ void chip8::OP_8xy6() {
   registers[0xF] = (registers[vx] & 0x1u);
   registers[vx] >>= 1;
 }
+
+// Set vx = vy, set vf = NOT borrow
+// if vy > vx, then vf is set to 1, otherwise its set to 0, then vx is
+// subtracted from from vx and results are stored in vx
+void chip8::OP_8xy7() {
+  uint8_t vx = (opcodes & 0x0F00u) >> 8u;
+  uint8_t vy = (opcodes & 0x00F0u) >> 4u;
+
+  if (registers[vy] > registers[vx]) {
+    registers[0xF] = 1;
+  } else {
+    registers[0xF] = 0;
+  }
+
+  registers[vx] = registers[vy] - registers[vx];
+}
+
