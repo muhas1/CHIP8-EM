@@ -2,10 +2,13 @@
 #include <chrono>
 #include <cstdint>
 #include <cstring>
+#include <filesystem>
 #include <fstream>
 #include <iosfwd>
 #include <iostream>
+#include <ostream>
 #include <random>
+#include <strings.h>
 #include <sys/types.h>
 
 const unsigned int START_ADDRESS = 0x200;
