@@ -274,3 +274,22 @@ void chip8::OP_9xy0() {
   }
 }
 
+// Set the index to the address
+void chip8::OP_Annn() {
+  uint16_t address = (opcodes & 0x0FFFu);
+  index = address;
+}
+
+// Jump to a new address
+void chip8::OP_Bnnn() {
+  uint16_t address = (opcodes & 0x0FFFu);
+  pc = registers[0] + address;
+}
+
+// Set the register x to a random byte AND kk
+void chip8::OP_Cxkk() {
+  uint8_t Vx = (opcodes & 0x0F00u) >> 8u;
+  uint8_t byte = opcodes & 0x00FFu;
+
+  registers[Vx] = randByte(randGen) & byte;
+}
